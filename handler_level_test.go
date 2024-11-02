@@ -11,7 +11,10 @@ import (
 
 func TestLogLevelFiltering(t *testing.T) {
 	buffer := &bytes.Buffer{}
-	handler := NewHandler(buffer, slog.LevelWarn)
+	handler := NewHandler(&Config{
+		Output:   buffer,
+		MinLevel: slog.LevelWarn,
+	})
 	logger := slog.New(handler)
 
 	// INFO level log should not appear

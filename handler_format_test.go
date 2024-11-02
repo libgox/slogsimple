@@ -12,7 +12,10 @@ import (
 
 func TestLogFormatBasic(t *testing.T) {
 	buffer := &bytes.Buffer{}
-	handler := NewHandler(buffer, slog.LevelInfo)
+	handler := NewHandler(&Config{
+		Output:   buffer,
+		MinLevel: slog.LevelInfo,
+	})
 	logger := slog.New(handler)
 
 	logger.InfoContext(context.Background(), "Basic log message", slog.String("key", "value"))
@@ -22,7 +25,10 @@ func TestLogFormatBasic(t *testing.T) {
 
 func TestLogFormatWithGroup(t *testing.T) {
 	buffer := &bytes.Buffer{}
-	handler := NewHandler(buffer, slog.LevelInfo).WithGroup("module")
+	handler := NewHandler(&Config{
+		Output:   buffer,
+		MinLevel: slog.LevelInfo,
+	}).WithGroup("module")
 	logger := slog.New(handler)
 
 	logger.InfoContext(context.Background(), "Grouped log message", slog.String("key", "value"))
@@ -32,7 +38,10 @@ func TestLogFormatWithGroup(t *testing.T) {
 
 func TestLogFormatWithAttrs(t *testing.T) {
 	buffer := &bytes.Buffer{}
-	handler := NewHandler(buffer, slog.LevelInfo).WithAttrs([]slog.Attr{
+	handler := NewHandler(&Config{
+		Output:   buffer,
+		MinLevel: slog.LevelInfo,
+	}).WithAttrs([]slog.Attr{
 		slog.String("app", "myApp"),
 		slog.String("env", "production"),
 	})
