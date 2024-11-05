@@ -19,8 +19,9 @@ func TestLogFormatBasic(t *testing.T) {
 	logger := slog.New(handler)
 
 	logger.InfoContext(context.Background(), "Basic log message", slog.String("key", "value"))
-	expected := time.Now().Format(time.RFC3339) + " Basic log message key=value "
-	assert.Contains(t, buffer.String(), expected, "Expected log to contain basic formatted log")
+	timestamp := time.Now().Format(time.RFC3339)
+	expected := timestamp + " INFO Basic log message key=value "
+	assert.Contains(t, buffer.String(), expected, "Expected log to contain basic formatted log with level")
 }
 
 func TestLogFormatWithGroup(t *testing.T) {
@@ -32,8 +33,8 @@ func TestLogFormatWithGroup(t *testing.T) {
 	logger := slog.New(handler)
 
 	logger.InfoContext(context.Background(), "Grouped log message", slog.String("key", "value"))
-	expected := "module.key=value"
-	assert.Contains(t, buffer.String(), expected, "Expected log to contain grouped key=value")
+	expected := "INFO Grouped log message module.key=value"
+	assert.Contains(t, buffer.String(), expected, "Expected log to contain grouped key=value with level")
 }
 
 func TestLogFormatWithAttrs(t *testing.T) {
@@ -48,6 +49,6 @@ func TestLogFormatWithAttrs(t *testing.T) {
 	logger := slog.New(handler)
 
 	logger.InfoContext(context.Background(), "Log with attributes", slog.String("key", "value"))
-	expected := "app=myApp env=production key=value"
-	assert.Contains(t, buffer.String(), expected, "Expected log to contain attributes with key=value")
+	expected := "INFO Log with attributes app=myApp env=production key=value"
+	assert.Contains(t, buffer.String(), expected, "Expected log to contain attributes with key=value and level")
 }
