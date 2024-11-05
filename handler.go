@@ -37,6 +37,8 @@ func (h *Handler) Handle(context context.Context, r slog.Record) error {
 	var builder strings.Builder
 	builder.WriteString(timestamp)
 	builder.WriteString(" ")
+	builder.WriteString(r.Level.String())
+	builder.WriteString(" ")
 	builder.WriteString(message)
 	builder.WriteString(" ")
 
