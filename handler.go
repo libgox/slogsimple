@@ -10,23 +10,37 @@ import (
 )
 
 type Config struct {
-	Output   io.Writer
-	MinLevel slog.Level
+	Output      io.Writer
+	MinLevel    slog.Level
+	GroupLevels map[string]slog.Level
 }
 
 type Handler struct {
-	output   io.Writer
-	minLevel slog.Level
+	output      io.Writer
+	minLevel    slog.Level
+	groupLevels map[string]slog.Level
 
 	groupName string
 	attrs     []slog.Attr
 }
 
 func NewHandler(config *Config) slog.Handler {
-	return &Handler{output: config.Output, minLevel: config.MinLevel}
+	h := &Handler{
+		output:   config.Output,
+		minLevel: config.MinLevel,
+	}
+	h.groupLevels = config.GroupLevels
+	return h
 }
 
 func (h *Handler) Enabled(context context.Context, level slog.Level) bool {
+	// If a specific level is set for the current group, use it.
+	if h.groupName != "" && h.groupLevels != nil {
+		if groupLevel, ok := h.groupLevels[h.groupName]; ok {
+			return level >= groupLevel
+		}
+	}
+	// Otherwise, fall back to the global minimum level.
 	return level >= h.minLevel
 }
 
@@ -68,9 +82,18 @@ func (h *Handler) Handle(context context.Context, r slog.Record) error {
 
 func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	newAttrs := append(h.attrs, attrs...)
-	return &Handler{groupName: h.groupName, attrs: newAttrs, output: h.output}
+	return &Handler{
+		groupName: h.groupName,
+		attrs:     newAttrs,
+		output:    h.output,
+	}
 }
 
 func (h *Handler) WithGroup(name string) slog.Handler {
-	return &Handler{groupName: name, attrs: h.attrs, output: h.output}
+	return &Handler{
+		groupName:   name,
+		attrs:       h.attrs,
+		output:      h.output,
+		groupLevels: h.groupLevels,
+	}
 }
