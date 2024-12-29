@@ -3,10 +3,10 @@ package slogsimple
 import (
 	"bytes"
 	"context"
+	"log/slog"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/slog"
 )
 
 func TestLogLevelFiltering(t *testing.T) {
