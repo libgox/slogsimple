@@ -3,11 +3,11 @@ package slogsimple
 import (
 	"bytes"
 	"context"
+	"log/slog"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/slog"
 )
 
 func TestLogFormatBasic(t *testing.T) {

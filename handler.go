@@ -3,10 +3,9 @@ package slogsimple
 import (
 	"context"
 	"io"
+	"log/slog"
 	"strings"
 	"time"
-
-	"golang.org/x/exp/slog"
 )
 
 type Config struct {
